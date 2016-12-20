@@ -45,6 +45,36 @@ public class ChocolateShop {
         return (dividend/divisor)-((dividend/divisor)%1);
     }
 
+    /*public static int calculateFreeChocolate(int wrappersNo, int wrappersNeeded, int freeChocolate, int remainingWrappers){
+
+
+        freeChocolate+=divideAndRoundDown(wrappersNo,wrappersNeeded);
+        remainingWrappers += ((wrappersNo%wrappersNeeded) + freeChocolate);
+        if (remainingWrappers>1){
+
+            calculateFreeChocolate(remainingWrappers, wrappersNeeded, freeChocolate, remainingWrappers);
+        }
+
+        return freeChocolate;
+    }
+    */
+    public static int calculateTotalChocolate(int wrappersNo, int wrappersNeeded,  int freeChocolate, int remainingWrappers, int totalChocolates){
+
+
+        if (wrappersNeeded>0){
+            freeChocolate=divideAndRoundDown(wrappersNo,wrappersNeeded);
+        }
+        remainingWrappers= wrappersNo%wrappersNeeded;
+        totalChocolates = freeChocolate+totalChocolates;
+        wrappersNo=freeChocolate+remainingWrappers;
+        if (wrappersNo>=wrappersNeeded){
+
+            totalChocolates=calculateTotalChocolate(wrappersNo, wrappersNeeded, freeChocolate,remainingWrappers, totalChocolates);
+        }
+
+        return totalChocolates;
+    }
+
     public static void GenerateOutput(String[] input) {
 
         String type = input[3].toLowerCase();
@@ -60,10 +90,10 @@ public class ChocolateShop {
 
         int chocoNo=divideAndRoundDown(cash, price);
 
-        int wrappersNeeded= Integer.parseInt(input[2]);
-        if(wrappersNeeded>0){
-            freeChocolate=divideAndRoundDown(chocoNo,wrappersNeeded);
-        }
+        int wrappersRemaining= 0;
+
+        int wrappersNeeded = Integer.parseInt(input[2]);
+
 
         String redemption;
 
@@ -79,8 +109,10 @@ public class ChocolateShop {
                 break;
 
             case "sugar free":
-                sugarFree = chocoNo + freeChocolate;
-                darkChoco = darkChoco + freeChocolate;
+
+                sugarFree = calculateTotalChocolate(chocoNo, wrappersNeeded, freeChocolate,wrappersRemaining, chocoNo);
+                darkChoco = calculateTotalChocolate(chocoNo, wrappersNeeded, freeChocolate,wrappersRemaining, chocoNo);
+
                 break;
 
             case "dark":
